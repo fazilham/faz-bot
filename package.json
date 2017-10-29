@@ -24,6 +24,7 @@
     "bluebird": "^3.4.7",
     "botbuilder": "^3.8.2",
     "dotenv-extended": "^1.0.4",
+    "moment": "^2.19.1",
     "node-schedule": "^1.2.5",
     "restify": "^4.3.0",
     "swagger-client": "^2.1.26"
