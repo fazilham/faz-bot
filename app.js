@@ -1,102 +1,120 @@
+// This loads the environment variables from the .env file
+require('dotenv-extended').load();
 
 var builder = require('botbuilder');
 var restify = require('restify');
-var port = process.env.PORT || 3000;
-var schedule = require('node-schedule');
-// Setup Restify Server
-var server = restify.createServer();
-server.listen(port, function () {
-    console.log('Sever started');
+var Promise = require('bluebird');
+var url = require('url');
+var Swagger = require('swagger-client');
+var schedule = require('node-schedule')
+
+// Swagger client for Bot Connector API
+var connectorApiClient = new Swagger({
+    url: 'https://raw.githubusercontent.com/Microsoft/BotBuilder/master/CSharp/Library/Microsoft.Bot.Connector.Shared/Swagger/ConnectorAPI.json',
+    usePromise: true
 });
 
-// Create chat bot and listen for messages
+// Setup Restify Server
+var server = restify.createServer();
+server.listen(process.env.port || process.env.PORT || 3978, function () {
+    console.log('%s listening to %s', server.name, server.url);
+});
+
+// Create chat bot
 var connector = new builder.ChatConnector({
     appId: '7c82dd69-17ed-4750-960c-a66b44ede779',
     appPassword: '9XOT7eiiYJhHrr79z9L6WZJ'
 });
 
-server.get('/', function (req, res) {
-    res.send('Hello')
-});
-
+// Listen for messages
 server.post('/api/messages', connector.listen());
 
-var userStore = [];
+// Bot setup
 var bot = new builder.UniversalBot(connector, function (session) {
-    // store user's address
-    var address = session.message.address;
-    console.log(address)
-    userStore.push(address);
+    var message = session.message;
+    var conversationId = message.address.conversation.id;
 
-    // end current dialog
-    session.endDialog('You\'ve been invited to a survey! It will start in a few seconds...');
+    // when a group conversation message is recieved,
+    // get the conversation members using the REST API and print it on the conversation.
+
+    // 1. inject the JWT from the connector to the client on every call
+    addTokenToClient(connector, connectorApiClient).then(function (client) {
+        // 2. override API client host and schema (https://api.botframework.com) with channel's serviceHost (e.g.: https://slack.botframework.com or http://localhost:NNNN)
+        var serviceUrl = url.parse(message.address.serviceUrl);
+        var serviceScheme = serviceUrl.protocol.split(':')[0];
+        client.setSchemes([serviceScheme]);
+        client.setHost(serviceUrl.host);
+        // 3. GET /v3/conversations/{conversationId}/members
+        return client.Conversations.Conversations_GetConversationMembers({ conversationId: conversationId })
+            .then(function (res) {
+                printMembersInChannel(message.address, res.obj);
+            });
+    }).catch(function (error) {
+        console.log('Error retrieving conversation members', error);
+    });
 });
 
-// Every 5 seconds, check for new registered users and start a new dialog
-setInterval(function () {
-    var newAddresses = userStore.splice(0);
-    newAddresses.forEach(function (address) {
+bot.on('conversationUpdate', function (message) {
+    if (message.membersAdded && message.membersAdded.length > 0) {
+        var membersAdded = message.membersAdded
+            .map(function (m) {
+                var isSelf = m.id === message.address.bot.id;
+                return (isSelf ? message.address.bot.name : m.name) || '' + ' (Id: ' + m.id + ')';
+            })
+            .join(', ');
 
-        console.log('Starting survey for address:', address);
 
-        // new conversation address, copy without conversationId
-        var newConversationAddress = Object.assign({}, address);
-        delete newConversationAddress.conversation;
+        var j = schedule.scheduleJob({hour: 23, minute: 30, dayOfWeek: 0}, function(){
+            bot.send(new builder.Message()
+                .address(message.address)
+                .text('Time for tea'));
 
-        // start survey dialog
-        bot.beginDialog(newConversationAddress, 'survey', null, function (err) {
-            if (err) {
-                // error ocurred while starting new conversation. Channel not supported?
-                bot.send(new builder.Message()
-                    .text('This channel does not support this operation: ' + err.message)
-                    .address(address));
-            }
         });
 
-    });
-}, 5);
 
-bot.dialog('survey', [
-    function (session) {
-        builder.Prompts.text(session, 'Hello... What\'s your name?');
-    },
-    function (session, results) {
-        session.userData.name = results.response;
-        builder.Prompts.number(session, 'Hi ' + results.response + ', How many years have you been coding?');
-    },
-    function (session, results) {
-        session.userData.coding = results.response;
-        builder.Prompts.choice(session, 'What language do you code Node using? ', ['JavaScript', 'CoffeeScript', 'TypeScript']);
-    },
-    function (session, results) {
-        session.userData.language = results.response.entity;
-        session.endDialog('Got it... ' + session.userData.name +
-            ' you\'ve been programming for ' + session.userData.coding +
-            ' years and use ' + session.userData.language + '.');
+
+
+
+
     }
-]);
 
+    if (message.membersRemoved && message.membersRemoved.length > 0) {
+        var membersRemoved = message.membersRemoved
+            .map(function (m) {
+                var isSelf = m.id === message.address.bot.id;
+                return (isSelf ? message.address.bot.name : m.name) || '' + ' (Id: ' + m.id + ')';
+            })
+            .join(', ');
 
-
- 
-// Middleware for logging
-bot.use({
-    receive: function (event, next) {
-        logUserConversation(event);
-        next();
-    },
-    send: function (event, next) {
-        logUserConversation(event);
-        next();
+        bot.send(new builder.Message()
+            .address(message.address)
+            .text('The following members ' + membersRemoved + ' were removed or left the conversation :('));
     }
 });
 
-console.log('Fazil')
-console.log('Fazil test');
-var event = schedule.scheduleJob("*/1 * * * *", function() {
-        console.log('Schedule Content')
-      
+// Helper methods
+
+// Inject the connector's JWT token into to the Swagger client
+function addTokenToClient(connector, clientPromise) {
+    // ask the connector for the token. If it expired, a new token will be requested to the API
+    var obtainToken = Promise.promisify(connector.getAccessToken.bind(connector));
+    return Promise.all([obtainToken(), clientPromise]).then(function (values) {
+        var token = values[0];
+        var client = values[1];
+        client.clientAuthorizations.add('AuthorizationBearer', new Swagger.ApiKeyAuthorization('Authorization', 'Bearer ' + token, 'header'));
+        return client;
     });
+}
 
+// Create a message with the member list and send it to the conversationAddress
+function printMembersInChannel(conversationAddress, members) {
+    if (!members || members.length === 0) return;
 
+    var memberList = members.map(function (m) { return '* ' + m.name + ' (Id: ' + m.id + ')'; })
+        .join('\n ');
 
+    var reply = new builder.Message()
+        .address(conversationAddress)
+        .text('These are the members of this conversation: \n ' + memberList);
+    bot.send(reply);
+}
