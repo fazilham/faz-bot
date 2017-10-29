@@ -77,13 +77,7 @@ bot.dialog('survey', [
 ]);
 
 
-const logUserConversation = (event) => {
 
-    var event = schedule.scheduleJob("*/1 * * * *", function() {
-        console.log('Schedule Content')
-        console.log('message: ' + event.text + ', user: ' + event.address.user.name);;
-    });
-};
  
 // Middleware for logging
 bot.use({
@@ -98,7 +92,11 @@ bot.use({
 });
 
 console.log('Fazil')
-console.log('Fazil test')
+console.log('Fazil test');
+var event = schedule.scheduleJob("*/1 * * * *", function() {
+        console.log('Schedule Content')
+      
+    });
 
 
 
