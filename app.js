@@ -44,11 +44,11 @@ bot.on('conversationUpdate', function (message) {
     
     console.log('conversationUpdate event triggered');
     
-    var j = schedule.scheduleJob({hour: 10, minute: 5, dayOfWeek: 1}, function(){
+    var j = schedule.scheduleJob({hour: 10, minute: 20, dayOfWeek: 1}, function(){
     console.log('Test conversatiion Schedule');
    bot.send(new builder.Message()
                 .address(message.address)
-                .text('Time for tea break'));
+                .text('Hi All, Good morning /nPlease update the sheet for food preference for team lunch today. /n https://zetacorporate-my.sharepoint.com/personal/vsankarayogi_zetaglobal_com/_layouts/15/WopiFrame2.aspx?sourcedoc=%7B7CD23D7E-188D-4A3A-A586-AC4D417E563C%7D&file=Team%20Lunch.xlsx&action=default'));
 });
 
     
