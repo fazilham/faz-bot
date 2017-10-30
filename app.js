@@ -74,7 +74,7 @@ bot.on('conversationUpdate', function (message) {
             })
             .join(', ');
 
-var j = schedule.scheduleJob({hour: 6, minute: 26, dayOfWeek: 1}, function(){
+var j = schedule.scheduleJob({hour: 6, minute: 50, dayOfWeek: 1}, function(){
     console.log('Test Schedule');
    bot.send(new builder.Message()
                 .address(message.address)
