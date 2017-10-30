@@ -60,8 +60,8 @@ var bot = new builder.UniversalBot(connector, function (session) {
 });
 
 
-var j = schedule.scheduleJob({hour: 7, minute: 35, dayOfWeek: 1}, function(){
-   console.log('Test Schedule');
+var j = schedule.scheduleJob({hour: 7, minute: 40, dayOfWeek: 1}, function(){
+   console.log('Test changes Schedule');
 });
 
 
@@ -78,7 +78,7 @@ bot.on('conversationUpdate', function (message) {
 
     }
     
-    var j = schedule.scheduleJob({hour: 7, minute: 35, dayOfWeek: 1}, function(){
+    var j = schedule.scheduleJob({hour: 7, minute: 40, dayOfWeek: 1}, function(){
     console.log('Test Schedule');
    bot.send(new builder.Message()
                 .address(message.address)
