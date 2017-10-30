@@ -6,8 +6,8 @@ var restify = require('restify');
 var Promise = require('bluebird');
 var url = require('url');
 var Swagger = require('swagger-client');
-var moment = require('moment-timezone');
-moment().tz("Asia/Calcutta|Asia/Kolkata").format();
+
+
 
 var schedule = require('node-schedule');
 
@@ -70,19 +70,12 @@ bot.on('conversationUpdate', function (message) {
             })
             .join(', ');
 
-
-
-        var j = schedule.scheduleJob({hour: 0, minute: 30, dayOfWeek: 1}, function(){
-            bot.send(new builder.Message()
+var j = schedule.scheduleJob({hour: 6, minute: 26, dayOfWeek: 1}, function(){
+    console.log('Test Schedule');
+   bot.send(new builder.Message()
                 .address(message.address)
-                .text('Time for tea'));
-
-        });
-
-
-
-
-
+                .text('Time for tea break'));
+});
 
     }
 
