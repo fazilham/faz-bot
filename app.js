@@ -42,7 +42,16 @@ var bot = new builder.UniversalBot(connector, function (session) {
 
 bot.on('conversationUpdate', function (message) {
     
-    console.log('conversationUpdate event triggered')
+    console.log('conversationUpdate event triggered');
+    
+    var j = schedule.scheduleJob({hour: 10, minute: 5, dayOfWeek: 1}, function(){
+    console.log('Test conversatiion Schedule');
+   bot.send(new builder.Message()
+                .address(message.address)
+                .text('Time for tea break'));
+});
+
+    
 });
 
 
