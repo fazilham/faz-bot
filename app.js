@@ -22,6 +22,7 @@ var connectorApiClient = new Swagger({
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
+    console.log('Time:'+ new Date())
 });
 
 // Create chat bot
@@ -59,6 +60,9 @@ var bot = new builder.UniversalBot(connector, function (session) {
 });
 
 
+var j = schedule.scheduleJob({hour: 6, minute: 40, dayOfWeek: 1}, function(){
+   console.log('Test Schedule');
+});
 
 
 bot.on('conversationUpdate', function (message) {
