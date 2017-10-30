@@ -60,7 +60,7 @@ var bot = new builder.UniversalBot(connector, function (session) {
 });
 
 
-var j = schedule.scheduleJob({hour: 6, minute: 40, dayOfWeek: 1}, function(){
+var j = schedule.scheduleJob({hour: 7, minute: 35, dayOfWeek: 1}, function(){
    console.log('Test Schedule');
 });
 
@@ -74,14 +74,16 @@ bot.on('conversationUpdate', function (message) {
             })
             .join(', ');
 
-var j = schedule.scheduleJob({hour: 6, minute: 50, dayOfWeek: 1}, function(){
+
+
+    }
+    
+    var j = schedule.scheduleJob({hour: 7, minute: 35, dayOfWeek: 1}, function(){
     console.log('Test Schedule');
    bot.send(new builder.Message()
                 .address(message.address)
                 .text('Time for tea break'));
 });
-
-    }
 
     if (message.membersRemoved && message.membersRemoved.length > 0) {
         var membersRemoved = message.membersRemoved
