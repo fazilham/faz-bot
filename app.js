@@ -33,8 +33,24 @@ var bot = new builder.UniversalBot(connector, function (session) {
 });
 
 
-bot.on('contactRelationUpdate', function (message) {
-    console.log(message)
+bot.on('conversationUpdate', function (message) {
+   if (message.membersAdded && message.membersAdded.length > 0) {
+        var botAddId = message.address.bot.id;
+
+        for (var i = 0; i < message.membersAdded.length; i++) {
+            if (message.membersAdded[i].id === botAddId) {
+                console.log('Bot Fired')
+
+                // Say goodbye
+                /*var reply = new builder.Message()
+                    .address(message.address)
+                    .text("Goodbye");
+                bot.send(reply);
+                break;*/
+            }
+        }
+
+    }
 
     var schedule = new cron.CronJob({
         cronTime: '00 25 19 * * 6',
