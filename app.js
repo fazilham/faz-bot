@@ -33,11 +33,11 @@ var bot = new builder.UniversalBot(connector, function (session) {
 });
 
 
-bot.on('conversationUpdate', function (message) {
+bot.on('contactRelationUpdate', function (message) {
     console.log(12)
 
     var schedule = new cron.CronJob({
-        cronTime: '00 55 10 * * 6',
+        cronTime: '00 59 18 * * 6',
         onTick: function() {
             console.log('job 1 ticked');
             sendProactiveMessage(message.address)
