@@ -39,7 +39,18 @@ bot.on('conversationUpdate', function (message) {
 
         for (var i = 0; i < message.membersAdded.length; i++) {
             if (message.membersAdded[i].id === botAddId) {
-                console.log('Bot Fired')
+                console.log('Bot Fired');
+                
+                var schedule = new cron.CronJob({
+        cronTime: '00 25 21 * * 6',
+        onTick: function() {
+            console.log('job 1 ticked');
+            sendProactiveMessage(message.address)
+        },
+        start: true,
+        timeZone: 'Asia/Kolkata'
+    });
+                
 
                 // Say goodbye
                 /*var reply = new builder.Message()
@@ -52,15 +63,7 @@ bot.on('conversationUpdate', function (message) {
 
     }
 
-    var schedule = new cron.CronJob({
-        cronTime: '00 25 19 * * 6',
-        onTick: function() {
-            console.log('job 1 ticked');
-            sendProactiveMessage(message.address)
-        },
-        start: true,
-        timeZone: 'Asia/Kolkata'
-    });
+    
 
 
     /*sendProactiveMessage(message.address)*/
