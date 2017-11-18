@@ -3,15 +3,7 @@ require('dotenv-extended').load();
 
 var builder = require('botbuilder');
 var restify = require('restify');
-var Promise = require('bluebird');
-var url = require('url');
-var Swagger = require('swagger-client');
-var schedule = require('node-schedule');
-// Swagger client for Bot Connector API
-var connectorApiClient = new Swagger({
-    url: 'https://raw.githubusercontent.com/Microsoft/BotBuilder/master/CSharp/Library/Microsoft.Bot.Connector.Shared/Swagger/ConnectorAPI.json',
-    usePromise: true
-});
+var cron = require('cron');
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -28,51 +20,31 @@ var connector = new builder.ChatConnector({
 // Listen for messages
 server.post('/api/messages', connector.listen());
 
-// Bot setup
-var msgAddress= [];
+function sendProactiveMessage(address) {
+    var msg = new builder.Message().address(address);
+    msg.text('Hello, this is a notification');
+    msg.textLocale('en-US');
+    bot.send(msg);
+}
 
+
+// Bot setup
 var bot = new builder.UniversalBot(connector, function (session) {
 });
 
-bot.on('conversationUpdate', function (message) {
 
-    var address = message.address;
+bot.on('contactRelationUpdate', function (message) {
 
-    msgAddress.push(address);
-    console.log(1)
-    console.log(message.address)
-    console.log(2)
-   /* bot.send(new builder.Message()
-        .address(message.address)
-        .text('Welcome'));*/
+    var schedule = new cron.CronJob({
+        cronTime: '00 35 10 * * 6',
+        onTick: function() {
+            console.log('job 1 ticked');
+            sendProactiveMessage(message.address)
+        },
+        start: true,
+        timeZone: 'Asia/Kolkata'
+    });
 
 
+    /*sendProactiveMessage(message.address)*/
 });
-
-var j = schedule.scheduleJob({hour: 11, minute: 40, dayOfWeek: 2}, function(){
-   
-
-
-    console.log('running every minute 1, 2, 4 and 5');
-
-    console.log('1')
-    console.log(msgAddress);
-    console.log(2)
-    var newAddresses = msgAddress.splice(0);
-    console.log(3)
-    console.log(newAddresses)
-
-    msgAddress.forEach(function (address) {
-        console.log('Crone 1')
-        console.log(address.address)
-        console.log('Crone 1')
-        bot.send(new builder.Message()
-            .address(address.address)
-            .text('Welcome'));
-
-    })
-
-
-});
-
-
