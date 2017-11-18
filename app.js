@@ -37,7 +37,7 @@ bot.on('contactRelationUpdate', function (message) {
     console.log(message)
 
     var schedule = new cron.CronJob({
-        cronTime: '00 10 19 * * 6',
+        cronTime: '00 25 19 * * 6',
         onTick: function() {
             console.log('job 1 ticked');
             sendProactiveMessage(message.address)
