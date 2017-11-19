@@ -40,39 +40,54 @@ bot.on('conversationUpdate', function (message) {
             if (message.membersAdded[i].id === botAddId) {
                 console.log('Bot Fired')
                 var schedule1 = new cron.CronJob({
-                    cronTime: '0 15 14 * * 0',
+                    cronTime: '0 45 14 * * 0',
                     onTick: function () {
                         console.log('Schedule 1 fired at 9am');
-                        sendProactiveMessage(message.address, 'Hi All, Good morning!  \nPlease update the sheet for food preference for team lunch today.  \n  https://zetacorporate-my.sharepoint.com/personal/vsankarayogi_zetaglobal_com/_layouts/15/WopiFrame2.aspx?sourcedoc=%7B7CD23D7E-188D-4A3A-A586-AC4D417E563C%7D&file=Team%20Lunch.xlsx&action=default');
-                       
+                        sendProactiveMessage(message.address, 'Hi All, Good morning!  \nPlease update the sheet for food preference for team lunch today.  \nhttps://zetacorporate-my.sharepoint.com/personal/vsankarayogi_zetaglobal_com/_layouts/15/WopiFrame2.aspx?sourcedoc=%7B7CD23D7E-188D-4A3A-A586-AC4D417E563C%7D&file=Team%20Lunch.xlsx&action=default');
+                        break;
                     },
-                    start: true,
+                    start: false,
                     timeZone: 'Asia/Kolkata'
-                })
+                });
                 var schedule2 = new cron.CronJob({
-                    cronTime: '00 20 14 * * 0',
+                    cronTime: '00 50 14 * * 7',
                     onTick: function () {
                         console.log('Reminder Schedule at 10:30');
-                        sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the sheet updated');
-                        
+                        sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the updated sheet');
+                        break;
                     },
-                    start: true,
+                    start: false,
                     timeZone: 'Asia/Kolkata'
-                })
+                });
                 var schedule3 = new cron.CronJob({
-                    cronTime: '00 25 14 * * 0',
+                    cronTime: '00 55 14 * * 7',
                     onTick: function () {
                         console.log('Reminder Schedule at 11:15 ');
-                        sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the sheet updated');
-                       
+                        sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the updated sheet');
+                        break;
                     },
-                    start: true,
+                    start: false,
                     timeZone: 'Asia/Kolkata'
-                })
-                break;
+                });
+                schedule1.start();
+                schedule2.start();
+                schedule3.start();
             }
-            
         }
 
+    } else if (message.membersRemoved) {
+        // See if bot was removed
+        var botId = message.address.bot.id;
+        for (var j = 0; j < message.membersRemoved.length; j++) {
+            if (message.membersRemoved[j].id === botId) {
+                // Say goodbye
+                schedule1.stop();
+                schedule2.stop();
+                schedule3.stop();
+
+                break;
+            }
+        }
     }
+
 });
