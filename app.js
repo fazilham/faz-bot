@@ -41,7 +41,7 @@ bot.on('conversationUpdate', function (message) {
             if (message.membersAdded[i].id === botAddId) {
                 console.log('Bot Fired')
                 var schedule1 = new cron.CronJob({
-                    cronTime: '0 42 13 * * 6',
+                    cronTime: '0 50 13 * * 0',
                     onTick: function () {
                         console.log('Schedule 1 fired at 9am');
                         sendProactiveMessage(message.address, 'Hi All, Good morning!  \nPlease update the sheet for food preference for team lunch today.  \nhttps://zetacorporate-my.sharepoint.com/personal/vsankarayogi_zetaglobal_com/_layouts/15/WopiFrame2.aspx?sourcedoc=%7B7CD23D7E-188D-4A3A-A586-AC4D417E563C%7D&file=Team%20Lunch.xlsx&action=default')
@@ -50,7 +50,7 @@ bot.on('conversationUpdate', function (message) {
                     timeZone: 'Asia/Kolkata'
                 })
                 var schedule2 = new cron.CronJob({
-                    cronTime: '00 45 13 * * 6',
+                    cronTime: '00 55 13 * * 0',
                     onTick: function () {
                         console.log('Reminder Schedule at 10:30');
                         sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the sheet updated')
@@ -59,7 +59,7 @@ bot.on('conversationUpdate', function (message) {
                     timeZone: 'Asia/Kolkata'
                 })
                 var schedule3 = new cron.CronJob({
-                    cronTime: '00 50 13 * * 6',
+                    cronTime: '00 59 13 * * 0',
                     onTick: function () {
                         console.log('Reminder Schedule at 11:15 ');
                         sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the sheet updated')
