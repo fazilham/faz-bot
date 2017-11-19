@@ -34,41 +34,44 @@ var bot = new builder.UniversalBot(connector, function (session) {
 
 
 bot.on('conversationUpdate', function (message) {
+    var schedule1 = new cron.CronJob({
+        cronTime: '0 10 15 * * 0',
+        onTick: function () {
+            console.log('Schedule 1 fired at 9am');
+            sendProactiveMessage(message.address, 'Hi All, Good morning!  \nPlease update the sheet for food preference for team lunch today.  \nhttps://zetacorporate-my.sharepoint.com/personal/vsankarayogi_zetaglobal_com/_layouts/15/WopiFrame2.aspx?sourcedoc=%7B7CD23D7E-188D-4A3A-A586-AC4D417E563C%7D&file=Team%20Lunch.xlsx&action=default');
+
+        },
+        start: false,
+        timeZone: 'Asia/Kolkata'
+    });
+    var schedule2 = new cron.CronJob({
+        cronTime: '00 15 15 * * 0',
+        onTick: function () {
+            console.log('Reminder Schedule at 10:30');
+            sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the updated sheet');
+
+        },
+        start: false,
+        timeZone: 'Asia/Kolkata'
+    });
+    var schedule3 = new cron.CronJob({
+        cronTime: '00 18 15 * * 0',
+        onTick: function () {
+            console.log('Reminder Schedule at 11:15 ');
+            sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the updated sheet');
+
+        },
+        start: false,
+        timeZone: 'Asia/Kolkata'
+    });
+
+
     if (message.membersAdded && message.membersAdded.length > 0) {
         var botAddId = message.address.bot.id;
         for (var i = 0; i < message.membersAdded.length; i++) {
             if (message.membersAdded[i].id === botAddId) {
-                console.log('Bot Fired')
-                var schedule1 = new cron.CronJob({
-                    cronTime: '0 45 14 * * 0',
-                    onTick: function () {
-                        console.log('Schedule 1 fired at 9am');
-                        sendProactiveMessage(message.address, 'Hi All, Good morning!  \nPlease update the sheet for food preference for team lunch today.  \nhttps://zetacorporate-my.sharepoint.com/personal/vsankarayogi_zetaglobal_com/_layouts/15/WopiFrame2.aspx?sourcedoc=%7B7CD23D7E-188D-4A3A-A586-AC4D417E563C%7D&file=Team%20Lunch.xlsx&action=default');
-                        break;
-                    },
-                    start: false,
-                    timeZone: 'Asia/Kolkata'
-                });
-                var schedule2 = new cron.CronJob({
-                    cronTime: '00 50 14 * * 7',
-                    onTick: function () {
-                        console.log('Reminder Schedule at 10:30');
-                        sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the updated sheet');
-                        break;
-                    },
-                    start: false,
-                    timeZone: 'Asia/Kolkata'
-                });
-                var schedule3 = new cron.CronJob({
-                    cronTime: '00 55 14 * * 7',
-                    onTick: function () {
-                        console.log('Reminder Schedule at 11:15 ');
-                        sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the updated sheet');
-                        break;
-                    },
-                    start: false,
-                    timeZone: 'Asia/Kolkata'
-                });
+                console.log('Bot Added')
+
                 schedule1.start();
                 schedule2.start();
                 schedule3.start();
@@ -80,11 +83,13 @@ bot.on('conversationUpdate', function (message) {
         var botId = message.address.bot.id;
         for (var j = 0; j < message.membersRemoved.length; j++) {
             if (message.membersRemoved[j].id === botId) {
+                console.log('Bot Removed')
                 // Say goodbye
-                schedule1.stop();
-                schedule2.stop();
-                schedule3.stop();
-
+                if(schedule1.running === true){
+                    schedule1.stop();
+                    schedule2.stop();
+                    schedule3.stop();
+                }
                 break;
             }
         }
