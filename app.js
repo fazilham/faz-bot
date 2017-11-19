@@ -13,8 +13,8 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
 
 // Create chat bot
 var connector = new builder.ChatConnector({
-    appId: '7c82dd69-17ed-4750-960c-a66b44ede779',
-    appPassword: '9XOT7eiiYJhHrr79z9L6WZJ'
+    appId: '0ad9b070-c39c-4171-a646-a622a5a18f12',
+    appPassword: 'doYBSH49[tpqzeEKM658%!_'
 });
 
 // Listen for messages
@@ -35,7 +35,7 @@ var bot = new builder.UniversalBot(connector, function (session) {
 
 bot.on('conversationUpdate', function (message) {
     var schedule1 = new cron.CronJob({
-        cronTime: '0 52 15 * * 0',
+        cronTime: '0 0 9 * * 1',
         onTick: function () {
             console.log('Schedule 1 fired at 9am');
             sendProactiveMessage(message.address, 'Hi All, Good morning!  \nPlease update the sheet for food preference for team lunch today.  \nhttps://zetacorporate-my.sharepoint.com/personal/vsankarayogi_zetaglobal_com/_layouts/15/WopiFrame2.aspx?sourcedoc=%7B7CD23D7E-188D-4A3A-A586-AC4D417E563C%7D&file=Team%20Lunch.xlsx&action=default');
@@ -45,7 +45,7 @@ bot.on('conversationUpdate', function (message) {
         timeZone: 'Asia/Kolkata'
     });
     var schedule2 = new cron.CronJob({
-        cronTime: '00 55 15 * * 0',
+        cronTime: '00 30 10 * * 1',
         onTick: function () {
             console.log('Reminder Schedule at 10:30');
             sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the updated sheet');
@@ -55,7 +55,7 @@ bot.on('conversationUpdate', function (message) {
         timeZone: 'Asia/Kolkata'
     });
     var schedule3 = new cron.CronJob({
-        cronTime: '00 58 15 * * 0',
+        cronTime: '00 15 11 * * 1',
         onTick: function () {
             console.log('Reminder Schedule at 11:15 ');
             sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the updated sheet');
