@@ -31,6 +31,13 @@ var bot = new builder.UniversalBot(connector, function (session) {
 });
 
 
+bot.dialog('hi', function (session) {
+    session.endDialog('Hi, I am a bot assisting you. Hope you like me. I would be learning from you all on how to speak. Bear with me. I am a slow learner');
+}).triggerAction({ matches: [/Hi/i, /genie/i, /^help/i, /^hello/i] });
+
+bot.dialog('thankyou', function (session, result) {
+    session.endDialog('Thank you. Noted.');
+}).triggerAction({ matches: [/updated/i, /done/i] });
 
 
 bot.on('conversationUpdate', function (message) {
