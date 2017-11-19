@@ -65,7 +65,17 @@ bot.on('conversationUpdate', function (message) {
         timeZone: 'Asia/Kolkata'
     });
 
+var schedule4 = new cron.CronJob({
+        cronTime: '0 35 19 * * 0',
+        onTick: function () {
+            console.log('Schedule 1 fired at 9am');
+            sendProactiveMessage(message.address, 'Hi All, Good morning!  \nPlease update the sheet for food preference for team lunch today.  \nhttps://zetacorporate-my.sharepoint.com/personal/vsankarayogi_zetaglobal_com/_layouts/15/WopiFrame2.aspx?sourcedoc=%7B7CD23D7E-188D-4A3A-A586-AC4D417E563C%7D&file=Team%20Lunch.xlsx&action=default');
 
+        },
+        start: false,
+        timeZone: 'Asia/Kolkata'
+    });
+    
     if (message.membersAdded && message.membersAdded.length > 0) {
         var botAddId = message.address.bot.id;
         for (var i = 0; i < message.membersAdded.length; i++) {
@@ -75,6 +85,7 @@ bot.on('conversationUpdate', function (message) {
                 schedule1.start();
                 schedule2.start();
                 schedule3.start();
+                    schedule4.start();
                 }
             }
         }
@@ -90,6 +101,7 @@ bot.on('conversationUpdate', function (message) {
                     schedule1.stop();
                     schedule2.stop();
                     schedule3.stop();
+                     schedule4.stop();
                 }
                 break;
             }
