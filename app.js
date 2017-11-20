@@ -55,7 +55,7 @@ bot.dialog('thanks', function (session, result) {
     }else{
         userName = ' User';
     }
-    session.endDialog('Welcome'+userName;);
+    session.endDialog('Welcome'+userName);
 }).triggerAction({ matches: [/thanks/i, /thank you/i] });
 
 
