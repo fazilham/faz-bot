@@ -52,8 +52,6 @@ bot.dialog('thanks', function (session, result) {
     var userName = '';
     if(session.message.user.name!== undefined){
         userName = ' '+session.message.user.name;
-    }else{
-        userName = ' User';
     }
     session.endDialog('Welcome'+userName);
 }).triggerAction({ matches: [/thanks/i, /thank you/i] });
@@ -72,7 +70,7 @@ bot.on('conversationUpdate', function (message) {
         timeZone: 'Asia/Kolkata'
     });
     var schedule2 = new cron.CronJob({
-        cronTime: '00 30 10 * * 1',
+        cronTime: '00 15 21 * * 1',
         onTick: function () {
             console.log('Reminder Schedule at 10:30');
             sendProactiveMessage(message.address, 'This is a reminder that we are going to place an order at 11:30 based on the updated sheet');
@@ -92,7 +90,7 @@ bot.on('conversationUpdate', function (message) {
         timeZone: 'Asia/Kolkata'
     });
 
-var schedule4 = new cron.CronJob({
+    var schedule4 = new cron.CronJob({
         cronTime: '0 35 19 * * 0',
         onTick: function () {
             console.log('Schedule 1 fired at 9am');
@@ -102,16 +100,16 @@ var schedule4 = new cron.CronJob({
         start: false,
         timeZone: 'Asia/Kolkata'
     });
-    
+
     if (message.membersAdded && message.membersAdded.length > 0) {
         var botAddId = message.address.bot.id;
         for (var i = 0; i < message.membersAdded.length; i++) {
             if (message.membersAdded[i].id === botAddId) {
                 console.log('Bot Added')
                 if(schedule1.running === undefined) {
-                schedule1.start();
-                schedule2.start();
-                schedule3.start();
+                    schedule1.start();
+                    schedule2.start();
+                    schedule3.start();
                     schedule4.start();
                 }
             }
@@ -128,7 +126,7 @@ var schedule4 = new cron.CronJob({
                     schedule1.stop();
                     schedule2.stop();
                     schedule3.stop();
-                     schedule4.stop();
+                    schedule4.stop();
                 }
                 break;
             }
