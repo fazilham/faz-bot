@@ -46,7 +46,7 @@ bot.dialog('update', function (session, result) {
         userName = ' '+session.message.user.name;
     }
     session.endDialog('Thank you'+userName+'. Noted.');
-}).triggerAction({ matches: [/updated/i, /done/i] });
+}).triggerAction({ matches: [/updated/i, /done /i, /done/i] });
 
 bot.dialog('thanks', function (session, result) {
     var userName = '';
