@@ -32,12 +32,32 @@ var bot = new builder.UniversalBot(connector, function (session) {
 
 
 bot.dialog('hi', function (session) {
-    session.endDialog('Hi, I am a bot assisting you. Hope you like me. I would be learning from you all on how to speak. Bear with me. I am a slow learner');
-}).triggerAction({ matches: [/Hi/i, /genie/i, /^help/i, /^hello/i] });
+    console.log(session.message.user.name);
+    var userName = '';
+   if(session.message.user.name!== undefined){
+       userName = ' '+session.message.user.name;
+   }
+    session.endDialog('Hi'+userName+', I am a bot assisting you. Hope you like me. I would be learning from you all on how to speak. Bear with me. I am a slow learner');
+}).triggerAction({ matches: [/Hi/i, /genie/i, /^help/i] });
 
-bot.dialog('thankyou', function (session, result) {
-    session.endDialog('Thank you. Noted.');
+bot.dialog('update', function (session, result) {
+    var userName = '';
+    if(session.message.user.name!== undefined){
+        userName = ' '+session.message.user.name;
+    }
+    session.endDialog('Thank you'+userName+'. Noted.');
 }).triggerAction({ matches: [/updated/i, /done/i] });
+
+bot.dialog('thanks', function (session, result) {
+    var userName = '';
+    if(session.message.user.name!== undefined){
+        userName = ' '+session.message.user.name;
+    }else{
+        userName = ' User';
+    }
+    session.endDialog('Welcome'+userName;);
+}).triggerAction({ matches: [/thanks/i, /thank you/i] });
+
 
 
 bot.on('conversationUpdate', function (message) {
