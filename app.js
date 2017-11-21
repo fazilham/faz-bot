@@ -11,6 +11,12 @@ server.listen(process.env.port || process.env.PORT || 3978, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
 
+server.get('/', function(req, res, next) {
+  res.send('Hi, Req is triggered')
+  return next();
+});
+
+
 // Create chat bot
 var connector = new builder.ChatConnector({
     appId: '0ad9b070-c39c-4171-a646-a622a5a18f12',
